@@ -1,0 +1,13 @@
+{
+	"version": "7",
+	"dialect": "sqlite",
+	"entries": [
+		{
+			"idx": 0,
+			"version": "6",
+			"when": 1729033856755,
+			"tag": "0000_slippery_mockingbird",
+			"breakpoints": true
+		}
+	]
+}

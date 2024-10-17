@@ -1,0 +1,10 @@
+{
+    "recommendations": [
+        "yoavbls.pretty-ts-errors",
+        "bradlc.vscode-tailwindcss",
+        "ms-azuretools.vscode-docker",
+        "biomejs.biome",
+        "ms-vscode.vscode-typescript-next",
+        "oven.bun-vscode"
+    ]
+}

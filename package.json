@@ -26,6 +26,7 @@
   },
   "trustedDependencies": [
     "@biomejs/biome",
-    "core-js"
+    "core-js",
+    "esbuild"
   ]
 }
