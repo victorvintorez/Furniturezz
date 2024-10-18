@@ -1,36 +1,34 @@
 FROM oven/bun AS builder
 
 ARG PORT
-ARG SQLITE_PATH
+ARG SQLITE_FILE
 ARG KEYDB_HOST
 ARG KEYDB_PORT
 ARG KEYDB_USERNAME
 ARG KEYDB_PASSWORD
 
-WORKDIR /app
+WORKDIR /repo
 
 COPY package.json package.json
 COPY bun.lockb bun.lockb
 
-RUN bun install
+COPY /app/server/package.json ./app/server/package.json
 
-COPY ./src ./src
+COPY /app/client ./app/client
+COPY /app/server ./app/server
 
 ENV NODE_ENV=production
 
+RUN bun install
+
 ENV PORT=${PORT}
-ENV SQLITE_PATH=${SQLITE_PATH}
+ENV SQLITE_FILE=${SQLITE_FILE}
 ENV KEYDB_HOST=${KEYDB_HOST}
 ENV KEYDB_PORT=${KEYDB_PORT}
 ENV KEYDB_USERNAME=${KEYDB_USERNAME}
 ENV KEYDB_PASSWORD=${KEYDB_PASSWORD}
 
-RUN echo ${PORT}
-RUN echo ${SQLITE_PATH}
-RUN echo ${KEYDB_HOST}
-RUN echo ${KEYDB_PORT}
-RUN echo ${KEYDB_USERNAME}
-RUN echo ${KEYDB_PASSWORD}
+WORKDIR /repo/app/server
 
 RUN bun build \
     --compile \
@@ -44,7 +42,7 @@ FROM gcr.io/distroless/base
 
 WORKDIR /app
 
-COPY --from=builder /app/server server
+COPY --from=builder /repo/app/server server
 
 ENV NODE_ENV=production
 

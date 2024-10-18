@@ -5,7 +5,7 @@ import { env } from "../utils/dotenv";
 import Redis from "ioredis";
 
 // Setup Sqlite DB and run migrations
-const bunSqlite = new Database(env.SQLITE_PATH, { create: true });
+const bunSqlite = new Database(env.SQLITE_FILE, { create: true });
 const sqlite = drizzle(bunSqlite, { casing: "snake_case" });
 migrate(sqlite, { migrationsFolder: "./src/db/.migrations" });
 

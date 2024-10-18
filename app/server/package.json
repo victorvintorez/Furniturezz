@@ -10,7 +10,6 @@
 		"db:generate": "drizzle-orm generate"
 	},
 	"dependencies": {
-		"@elysiajs/swagger": "^1.1.5",
 		"drizzle-orm": "^0.34.1",
 		"drizzle-typebox": "^0.1.1",
 		"elysia": "latest",

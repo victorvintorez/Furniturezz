@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const envSchema = z.object({
 	PORT: z.number().optional().default(8000),
-	SQLITE_PATH: z.string(),
+	SQLITE_FILE: z.string(),
 	KEYDB_HOST: z.string(),
 	KEYDB_PORT: z.number().optional().default(6379),
 	KEYDB_USERNAME: z.string().optional(),
@@ -11,7 +11,7 @@ const envSchema = z.object({
 
 const envParse = envSchema.safeParse({
 	PORT: process.env.PORT && Number.parseInt(process.env.PORT),
-	SQLITE_PATH: process.env.SQLITE_PATH,
+	SQLITE_FILE: process.env.SQLITE_FILE,
 	KEYDB_HOST: process.env.KEYDB_HOST,
 	KEYDB_PORT: process.env.KEYDB_PORT && Number.parseInt(process.env.KEYDB_PORT),
 	KEYDB_USERNAME: process.env.KEYDB_USERNAME,

@@ -1,10 +1,10 @@
-import { swagger } from "@elysiajs/swagger";
 import { Elysia } from "elysia";
 import { env } from "./utils/dotenv";
+import { AuthService } from "./services/auth.service";
 
 const app = new Elysia({ prefix: "/api" })
-	.use(swagger())
-	.get("/", () => "Hello Elysia")
+	.use(AuthService)
+	.get("/", "Hello Elysia")
 	.listen(env.PORT);
 
 console.log(
