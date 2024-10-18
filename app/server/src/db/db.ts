@@ -11,9 +11,9 @@ migrate(sqlite, { migrationsFolder: "./src/db/.migrations" });
 
 // Setup KeyDB
 const keydb = new Redis({
-    host: env.REDIS_HOST,
-    port: env.REDIS_PORT,
-    username: env.REDIS_USERNAME,
-    password: env.REDIS_PASSWORD,
+    host: env.KEYDB_HOST,
+    port: env.KEYDB_PORT,
+    username: env.KEYDB_USERNAME,
+    password: env.KEYDB_PASSWORD,
 })
 export { sqlite, keydb };

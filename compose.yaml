@@ -1,0 +1,35 @@
+services:
+  server:
+    build:
+      context: app/server
+      dockerfile: Dockerfile
+      args:
+        PORT: $SERVER_PORT
+        SQLITE_PATH: $SQLITE_PATH
+        KEYDB_HOST: $KEYDB_HOST
+        KEYDB_PORT: $KEYDB_PORT
+        KEYDB_USERNAME: $KEYDB_USERNAME
+        KEYDB_PASSWORD: $KEYDB_PASSWORD
+    ports:
+      - ${SERVER_PORT}:8000
+    volumes:
+      - sqlite:/app/sqlite
+    restart: unless-stopped
+  keydb:
+    image: eqalpha/keydb
+    ports:
+      - ${KEYDB_PORT}:6379
+    volumes:
+      - keydb:/data
+    restart: unless-stopped
+  client:
+    build:
+      context: app/client
+      dockerfile: Dockerfile
+    ports:
+      - ${CLIENT_PORT}:3000
+    restart: unless-stopped
+
+volumes:
+  sqlite:
+  keydb:
