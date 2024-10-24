@@ -1,21 +1,21 @@
 import { eq, type ColumnDataType, type GeneratedColumnConfig, type InferSelectModel } from "drizzle-orm";
-import type { BunSQLiteDatabase } from "drizzle-orm/bun-sqlite";
-import type { SQLiteColumn, SQLiteTableWithColumns } from "drizzle-orm/sqlite-core";
-import type Redis from "ioredis";
+import type { MySqlColumn, MySqlTableWithColumns } from "drizzle-orm/mysql-core";
+import type { MySql2Database } from "drizzle-orm/mysql2";
 import type { Adapter, DatabaseSession, DatabaseUser, UserId } from "lucia";
+import type { createClient } from "redis";
 
-export class DrizzleSqliteAdapterWithKeyDb implements Adapter {
-	private sqliteDb: BunSQLiteDatabase;
-    private keyDb: Redis;
+export class DrizzleMySqlAdapterWithKeyDb implements Adapter {
+	private mysqlDb: MySql2Database;
+    private keyDb: ReturnType<typeof createClient>;
     
-    private userTable: SQLiteUserTable;
+    private userTable: MySqlUserTable;
 
     constructor(
-        sqliteDb: BunSQLiteDatabase,
-        keyDb: Redis,
-        userTable: SQLiteUserTable,
+        mysqlDb: MySql2Database,
+        keyDb: ReturnType<typeof createClient>,
+        userTable: MySqlUserTable,
     ) {
-        this.sqliteDb = sqliteDb;
+        this.mysqlDb = mysqlDb;
         this.keyDb = keyDb;
         this.userTable = userTable;
     }
@@ -38,9 +38,9 @@ export class DrizzleSqliteAdapterWithKeyDb implements Adapter {
         const session = await this.getSession(sessionId);
         if (!session) return null;
         const { _, $inferInsert, $inferSelect, getSQL, shouldOmitSQLParens, ...userColumns } = this.userTable;
-        const user = await this.sqliteDb.select(userColumns).from(this.userTable).where(eq(this.userTable.id, session.userId));
+        const user = await this.mysqlDb.select(userColumns).from(this.userTable).where(eq(this.userTable.id, session.userId));
         if(user.length !== 1) return null;
-        return transformSqliteUserToLuciaUser(user[0]);
+        return transformMySqlUserToLuciaUser(user[0]);
     }
 
     public async deleteSession(sessionId: string): Promise<void> {
@@ -48,14 +48,14 @@ export class DrizzleSqliteAdapterWithKeyDb implements Adapter {
         if (!session) return;
         await Promise.all([
             this.keyDb.del(this.sessionKey(sessionId)),
-            this.keyDb.srem(this.userSessionKey(session.userId), sessionId),
+            this.keyDb.sRem(this.userSessionKey(session.userId), sessionId),
         ])
     }
 
     public async deleteUserSessions(userId: UserId): Promise<void> {
-        const sessionIds = await this.keyDb.smembers(this.userSessionKey(userId));
+        const sessionIds = await this.keyDb.sMembers(this.userSessionKey(userId));
         await Promise.all([
-            this.keyDb.del(...sessionIds.map(this.sessionKey)),
+            this.keyDb.del([...sessionIds.map(this.sessionKey)]),
             this.keyDb.del(this.userSessionKey(userId)),
         ]);
     }
@@ -69,7 +69,7 @@ export class DrizzleSqliteAdapterWithKeyDb implements Adapter {
     }
 
     public async getUserSessions(userId: UserId): Promise<DatabaseSession[]> {
-        const sessionIds = await this.keyDb.smembers(this.userSessionKey(userId));
+        const sessionIds = await this.keyDb.sMembers(this.userSessionKey(userId));
         if (sessionIds.length === 0) return [];
         return await Promise.all(sessionIds.map(async (sessionId) => await this.getSession(sessionId) as DatabaseSession));
     }
@@ -77,7 +77,7 @@ export class DrizzleSqliteAdapterWithKeyDb implements Adapter {
     public async setSession(session: DatabaseSession): Promise<void> {
         await Promise.all([
             this.keyDb.set(this.sessionKey(session.id), JSON.stringify(session)),
-            this.keyDb.sadd(this.userSessionKey(session.userId), session.id),
+            this.keyDb.sAdd(this.userSessionKey(session.userId), session.id),
         ]);
     }
 
@@ -96,16 +96,16 @@ export class DrizzleSqliteAdapterWithKeyDb implements Adapter {
 }
 
 
-export type SQLiteUserTable = SQLiteTableWithColumns<{
-    dialect: "sqlite";
+export type MySqlUserTable = MySqlTableWithColumns<{
+    dialect: "mysql";
     columns: {
-        id: SQLiteColumn<{
+        id: MySqlColumn<{
             name: string;
             tableName: string;
             dataType: ColumnDataType;
             columnType: string;
             data: UserId;
-            driverParam: number;
+            driverParam: string | number;
             notNull: true;
             hasDefault: boolean;
             enumValues: string[] | undefined;
@@ -132,7 +132,7 @@ const transformKeyDbSessionToLuciaSession = (raw: string): DatabaseSession => {
     }
 }
 
-const transformSqliteUserToLuciaUser = (raw: InferSelectModel<SQLiteUserTable>): DatabaseUser => {
+const transformMySqlUserToLuciaUser = (raw: InferSelectModel<MySqlUserTable>): DatabaseUser => {
     const { id, ...attributes } = raw;
     return {
         id,

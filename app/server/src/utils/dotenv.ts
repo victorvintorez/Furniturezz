@@ -1,8 +1,12 @@
 import { z } from "zod";
 
 const envSchema = z.object({
-	PORT: z.number().optional().default(8000),
-	SQLITE_FILE: z.string(),
+	SERVER_PORT: z.number().optional().default(8000),
+	MYSQL_HOST: z.string(),
+	MYSQL_PORT: z.number().optional().default(3306),
+	MYSQL_USER: z.string(),
+	MYSQL_PASSWORD: z.string(),
+	MYSQL_DATABASE: z.string(),
 	KEYDB_HOST: z.string(),
 	KEYDB_PORT: z.number().optional().default(6379),
 	KEYDB_USERNAME: z.string().optional(),
@@ -10,8 +14,12 @@ const envSchema = z.object({
 });
 
 const envParse = envSchema.safeParse({
-	PORT: process.env.PORT && Number.parseInt(process.env.PORT),
-	SQLITE_FILE: process.env.SQLITE_FILE,
+	SERVER_PORT: process.env.SERVER_PORT && Number.parseInt(process.env.SERVER_PORT),
+	MYSQL_HOST: process.env.MYSQL_HOST,
+	MYSQL_PORT: process.env.MYSQL_PORT && Number.parseInt(process.env.MYSQL_PORT),
+	MYSQL_USER: process.env.MYSQL_USER,
+	MYSQL_PASSWORD: process.env.MYSQL_PASSWORD,
+	MYSQL_DATABASE: process.env.MYSQL_DATABASE,
 	KEYDB_HOST: process.env.KEYDB_HOST,
 	KEYDB_PORT: process.env.KEYDB_PORT && Number.parseInt(process.env.KEYDB_PORT),
 	KEYDB_USERNAME: process.env.KEYDB_USERNAME,

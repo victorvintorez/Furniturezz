@@ -1,239 +1,325 @@
 {
-	"version": "6",
-	"dialect": "sqlite",
-	"id": "05ed774d-fd1d-4699-826c-be8884948b13",
-	"prevId": "00000000-0000-0000-0000-000000000000",
-	"tables": {
-		"furniture_details": {
-			"name": "furniture_details",
-			"columns": {
-				"furniture_id": {
-					"name": "furniture_id",
-					"type": "integer",
-					"primaryKey": true,
-					"notNull": true,
-					"autoincrement": true
-				},
-				"user_id": {
-					"name": "user_id",
-					"type": "integer",
-					"primaryKey": false,
-					"notNull": true,
-					"autoincrement": false
-				},
-				"furniture_make": {
-					"name": "furniture_make",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true,
-					"autoincrement": false
-				},
-				"furniture_model": {
-					"name": "furniture_model",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true,
-					"autoincrement": false
-				},
-				"furniture_color": {
-					"name": "furniture_color",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true,
-					"autoincrement": false
-				},
-				"furniture_type": {
-					"name": "furniture_type",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true,
-					"autoincrement": false
-				},
-				"location": {
-					"name": "location",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true,
-					"autoincrement": false
-				},
-				"year": {
-					"name": "year",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true,
-					"autoincrement": false
-				},
-				"video_url": {
-					"name": "video_url",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": false,
-					"autoincrement": false,
-					"default": "''"
-				},
-				"image_url": {
-					"name": "image_url",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": false,
-					"autoincrement": false,
-					"default": "''"
-				}
-			},
-			"indexes": {},
-			"foreignKeys": {
-				"furniture_details_user_id_users_id_fk": {
-					"name": "furniture_details_user_id_users_id_fk",
-					"tableFrom": "furniture_details",
-					"tableTo": "users",
-					"columnsFrom": ["user_id"],
-					"columnsTo": ["id"],
-					"onDelete": "no action",
-					"onUpdate": "no action"
-				}
-			},
-			"compositePrimaryKeys": {},
-			"uniqueConstraints": {}
-		},
-		"users": {
-			"name": "users",
-			"columns": {
-				"id": {
-					"name": "id",
-					"type": "integer",
-					"primaryKey": true,
-					"notNull": true,
-					"autoincrement": true
-				},
-				"username": {
-					"name": "username",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true,
-					"autoincrement": false
-				},
-				"password": {
-					"name": "password",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true,
-					"autoincrement": false
-				},
-				"title": {
-					"name": "title",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true,
-					"autoincrement": false
-				},
-				"firstName": {
-					"name": "firstName",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true,
-					"autoincrement": false
-				},
-				"lastName": {
-					"name": "lastName",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true,
-					"autoincrement": false
-				},
-				"gender": {
-					"name": "gender",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true,
-					"autoincrement": false
-				},
-				"address1": {
-					"name": "address1",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true,
-					"autoincrement": false
-				},
-				"address2": {
-					"name": "address2",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": false,
-					"autoincrement": false,
-					"default": "''"
-				},
-				"address3": {
-					"name": "address3",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": false,
-					"autoincrement": false,
-					"default": "''"
-				},
-				"postcode": {
-					"name": "postcode",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true,
-					"autoincrement": false
-				},
-				"description": {
-					"name": "description",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": false,
-					"autoincrement": false,
-					"default": "''"
-				},
-				"email": {
-					"name": "email",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true,
-					"autoincrement": false
-				},
-				"telephone": {
-					"name": "telephone",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true,
-					"autoincrement": false
-				},
-				"profileBlob": {
-					"name": "profileBlob",
-					"type": "blob",
-					"primaryKey": false,
-					"notNull": false,
-					"autoincrement": false
-				},
-				"profileUrl": {
-					"name": "profileUrl",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": false,
-					"autoincrement": false,
-					"default": "''"
-				}
-			},
-			"indexes": {
-				"users_username_unique": {
-					"name": "users_username_unique",
-					"columns": ["username"],
-					"isUnique": true
-				}
-			},
-			"foreignKeys": {},
-			"compositePrimaryKeys": {},
-			"uniqueConstraints": {}
-		}
-	},
-	"enums": {},
-	"_meta": {
-		"schemas": {},
-		"tables": {},
-		"columns": {}
-	},
-	"internal": {
-		"indexes": {}
-	}
+  "version": "5",
+  "dialect": "mysql",
+  "id": "06aec6fe-e9a7-4b0c-9760-7386b1a17788",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "tables": {
+    "documents": {
+      "name": "documents",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "documentType": {
+          "name": "documentType",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "documentUrl": {
+          "name": "documentUrl",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "documents_id": {
+          "name": "documents_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "furniture_details": {
+      "name": "furniture_details",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "userId": {
+          "name": "userId",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "furnitureMake": {
+          "name": "furnitureMake",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "furnitureModel": {
+          "name": "furnitureModel",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "furnitureColor": {
+          "name": "furnitureColor",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "furnitureType": {
+          "name": "furnitureType",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "location": {
+          "name": "location",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "year": {
+          "name": "year",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "videoUrl": {
+          "name": "videoUrl",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "imageUrl": {
+          "name": "imageUrl",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "furniture_details_userId_users_id_fk": {
+          "name": "furniture_details_userId_users_id_fk",
+          "tableFrom": "furniture_details",
+          "tableTo": "users",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "furniture_details_videoUrl_documents_id_fk": {
+          "name": "furniture_details_videoUrl_documents_id_fk",
+          "tableFrom": "furniture_details",
+          "tableTo": "documents",
+          "columnsFrom": [
+            "videoUrl"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "furniture_details_imageUrl_documents_id_fk": {
+          "name": "furniture_details_imageUrl_documents_id_fk",
+          "tableFrom": "furniture_details",
+          "tableTo": "documents",
+          "columnsFrom": [
+            "imageUrl"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "furniture_details_id": {
+          "name": "furniture_details_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "users": {
+      "name": "users",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "username": {
+          "name": "username",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "password": {
+          "name": "password",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "firstName": {
+          "name": "firstName",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "lastName": {
+          "name": "lastName",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "gender": {
+          "name": "gender",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "address1": {
+          "name": "address1",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "address2": {
+          "name": "address2",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "('')"
+        },
+        "address3": {
+          "name": "address3",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "('')"
+        },
+        "postcode": {
+          "name": "postcode",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "('')"
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "telephone": {
+          "name": "telephone",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "profileUrl": {
+          "name": "profileUrl",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "users_profileUrl_documents_id_fk": {
+          "name": "users_profileUrl_documents_id_fk",
+          "tableFrom": "users",
+          "tableTo": "documents",
+          "columnsFrom": [
+            "profileUrl"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "users_id": {
+          "name": "users_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "users_username_unique": {
+          "name": "users_username_unique",
+          "columns": [
+            "username"
+          ]
+        }
+      }
+    }
+  },
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "tables": {},
+    "indexes": {}
+  }
 }

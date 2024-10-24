@@ -4,8 +4,12 @@ import { env } from "./src/utils/dotenv";
 export default defineConfig({
 	out: "./src/db/.migrations",
 	schema: "./src/db/schema.ts",
-	dialect: "sqlite",
+	dialect: "mysql",
 	dbCredentials: {
-		url: env.DB_PATH,
+		host: env.MYSQL_HOST,
+		port: env.MYSQL_PORT,
+		user: env.MYSQL_USER,
+		password: env.MYSQL_PASSWORD,
+		database: env.MYSQL_DATABASE,
 	},
 });

@@ -1,9 +1,9 @@
-import { blob, int, sqliteTable as table, text } from "drizzle-orm/sqlite-core";
+import { bigint, serial, mysqlTable as table, text, varchar } from "drizzle-orm/mysql-core";
 
 // users table schema
 export const usersTable = table("users", {
-	id: int().primaryKey({ autoIncrement: true }),
-	username: text().notNull().unique(),
+	id: serial().primaryKey(),
+	username: varchar({ length: 255 }).notNull().unique(),
 	password: text().notNull(),
 	title: text().notNull(),
 	firstName: text().notNull(),
@@ -16,24 +16,35 @@ export const usersTable = table("users", {
 	description: text().default(""),
 	email: text().notNull(),
 	telephone: text().notNull(),
-	profileBlob: blob(),
-	profileUrl: text().default(""),
+	profileUrl: bigint({ mode: 'number', unsigned: true })
+		.notNull()
+		.references(() => documentsTable.id),
 });
 
 export const furnitureDetailsTable = table("furniture_details", {
-	furniture_id: int().primaryKey({ autoIncrement: true }),
-	user_id: int()
+	id: serial().primaryKey(),
+	userId: bigint({ mode: 'number', unsigned: true })
 		.notNull()
 		.references(() => usersTable.id),
-	furniture_make: text().notNull(),
-	furniture_model: text().notNull(),
-	furniture_color: text().notNull(),
-	furniture_type: text().notNull(),
+	furnitureMake: text().notNull(),
+	furnitureModel: text().notNull(),
+	furnitureColor: text().notNull(),
+	furnitureType: text().notNull(),
 	location: text().notNull(),
 	year: text().notNull(),
-	video_url: text().default(""),
-	image_url: text().default(""),
+	videoUrl: bigint({ mode: 'number', unsigned: true })
+		.notNull()
+		.references(() => documentsTable.id),
+	imageUrl: bigint({ mode: 'number', unsigned: true })
+		.notNull()
+		.references(() => documentsTable.id),
 });
+
+export const documentsTable = table("documents", {
+	id: serial().primaryKey(),
+	documentType: text().notNull(),
+	documentUrl: text().notNull(),
+})
 
 export const Table = {
 	users: usersTable,

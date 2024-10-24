@@ -1,20 +1,27 @@
 services:
-  server:
+  app:
     build:
       context: .
-      dockerfile: ./app/server/Dockerfile
+      dockerfile: ./app/Dockerfile
       args:
-        PORT: $SERVER_PORT
-        SQLITE_FILE: $SQLITE_FILE
+        SERVER_PORT: $SERVER_PORT
+        MYSQL_HOST: $MYSQL_HOST
+        MYSQL_PORT: $MYSQL_PORT
+        MYSQL_USER: $MYSQL_USER
+        MYSQL_PASSWORD: $MYSQL_PASSWORD
+        MYSQL_DATABASE: $MYSQL_DATABASE
         KEYDB_HOST: $KEYDB_HOST
         KEYDB_PORT: $KEYDB_PORT
         KEYDB_USERNAME: $KEYDB_USERNAME
         KEYDB_PASSWORD: $KEYDB_PASSWORD
     ports:
       - ${SERVER_PORT}:8000
-    volumes:
-      - sqlite:/app/sqlite
     restart: unless-stopped
+    depends_on:
+      keydb:
+        condition: service_started
+      mysql:
+        condition: service_healthy
   keydb:
     image: eqalpha/keydb
     ports:
@@ -22,14 +29,24 @@ services:
     volumes:
       - keydb:/data
     restart: unless-stopped
-  client:
-    build:
-      context: .
-      dockerfile: Dockerfile
+  mysql:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+      MYSQL_DATABASE: $MYSQL_DATABASE
+      MYSQL_USER: $MYSQL_USER
+      MYSQL_PASSWORD: $MYSQL_PASSWORD
     ports:
-      - ${CLIENT_PORT}:3000
+      - ${MYSQL_PORT}:3306
+    volumes:
+      - mysql:/var/lib/mysql
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysql", "-u", "${MYSQL_USER}", "-p${MYSQL_PASSWORD}", "--execute", "SHOW DATABASES;"]
+      interval: 5s
+      timeout: 30s
+      retries: 5
 
 volumes:
-  sqlite:
+  mysql:
   keydb:

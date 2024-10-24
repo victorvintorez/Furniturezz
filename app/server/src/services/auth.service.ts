@@ -1,10 +1,10 @@
 import { Lucia, type Session, type User } from "lucia";
-import { DrizzleSqliteAdapterWithKeyDb } from "../db/adapter";
-import { keydb, sqlite } from "../db/db";
+import { DrizzleMySqlAdapterWithKeyDb } from "../db/adapter";
+import { keydb, mysql } from "../db/db";
 import { usersTable } from "../db/schema";
 import Elysia, { error } from "elysia";
 
-const adapter = new DrizzleSqliteAdapterWithKeyDb(sqlite, keydb, usersTable)
+const adapter = new DrizzleMySqlAdapterWithKeyDb(mysql, keydb, usersTable)
 
 export const lucia = new Lucia(adapter, {
 	sessionCookie: {
@@ -22,8 +22,8 @@ declare module "lucia" {
 }
 
 export const AuthService = new Elysia({ name: "Auth.Service" })
-	.derive( async (context): Promise<{ user: User | null; session: Session | null; }> => {
-		const cookie = context.request.headers.get("Cookie") ?? "";
+	.derive( async (ctx): Promise<{ user: User | null; session: Session | null; }> => {
+		const cookie = ctx.request.headers.get("Cookie") ?? "";
 		const sessionId = lucia.readSessionCookie(cookie);
 		if (!sessionId) return { user: null, session: null };
 
@@ -31,7 +31,7 @@ export const AuthService = new Elysia({ name: "Auth.Service" })
 
 		if (session?.fresh) {
 			const sessionCookie = lucia.createSessionCookie(session.id);
-			context.cookie[sessionCookie.name].set({
+			ctx.cookie[sessionCookie.name].set({
 				value: sessionCookie.value,
 				...sessionCookie.attributes
 			})
@@ -39,7 +39,7 @@ export const AuthService = new Elysia({ name: "Auth.Service" })
 
 		if (!session) {
 			const sessionCookie = lucia.createBlankSessionCookie();
-			context.cookie[sessionCookie.name].set({
+			ctx.cookie[sessionCookie.name].set({
 				value: sessionCookie.value,
 				...sessionCookie.attributes
 			})
