@@ -8,6 +8,13 @@
       "when": 1729727859313,
       "tag": "0000_perfect_mandarin",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1729867374222,
+      "tag": "0001_short_chat",
+      "breakpoints": true
     }
   ]
 }
