@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.7-labs
 
 # Build the server and client
-FROM oven/bun AS builder
+FROM oven/bun:1.1.31 AS builder
 
 # Server Args
 ARG SERVER_PORT
