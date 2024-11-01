@@ -3,21 +3,6 @@
 # Build the server and client
 FROM oven/bun:latest AS builder
 
-# Server Args
-ARG SERVER_PORT
-
-# MySQL Args
-ARG MYSQL_HOST
-ARG MYSQL_PORT
-ARG MYSQL_USERNAME
-ARG MYSQL_PASSWORD
-ARG MYSQL_DATABASE
-
-# KeyDB Args
-ARG KEYDB_HOST
-ARG KEYDB_PORT
-ARG KEYDB_PASSWORD
-
 WORKDIR /repo
 
 COPY package.json package.json
@@ -32,21 +17,6 @@ COPY /app/server ./app/server
 ENV NODE_ENV=production
 
 RUN bun install
-
-# Server Configuration
-ENV SERVER_PORT=${SERVER_PORT}
-
-# MySQL Configuration
-ENV MYSQL_HOST=${MYSQL_HOST}
-ENV MYSQL_PORT=${MYSQL_PORT}
-ENV MYSQL_USERNAME=${MYSQL_USERNAME}
-ENV MYSQL_PASSWORD=${MYSQL_PASSWORD}
-ENV MYSQL_DATABASE=${MYSQL_DATABASE}
-
-# KeyDB Configuration
-ENV KEYDB_HOST=${KEYDB_HOST}
-ENV KEYDB_PORT=${KEYDB_PORT}
-ENV KEYDB_PASSWORD=${KEYDB_PASSWORD}
 
 # Move to the client repo build the client project
 WORKDIR /repo/app/client
