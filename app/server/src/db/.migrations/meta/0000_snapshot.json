@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "06aec6fe-e9a7-4b0c-9760-7386b1a17788",
+  "id": "8c8ff7dd-ddd4-4647-baaf-ecfe2ec496bf",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "documents": {
@@ -16,14 +16,14 @@
         },
         "documentType": {
           "name": "documentType",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "documentUrl": {
           "name": "documentUrl",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -60,55 +60,55 @@
         },
         "furnitureMake": {
           "name": "furnitureMake",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "furnitureModel": {
           "name": "furnitureModel",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "furnitureColor": {
           "name": "furnitureColor",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "furnitureType": {
           "name": "furnitureType",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "location": {
           "name": "location",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "year": {
           "name": "year",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "videoUrl": {
-          "name": "videoUrl",
+        "videoId": {
+          "name": "videoId",
           "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "imageUrl": {
-          "name": "imageUrl",
+        "imageId": {
+          "name": "imageId",
           "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
@@ -130,12 +130,12 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "furniture_details_videoUrl_documents_id_fk": {
-          "name": "furniture_details_videoUrl_documents_id_fk",
+        "furniture_details_videoId_documents_id_fk": {
+          "name": "furniture_details_videoId_documents_id_fk",
           "tableFrom": "furniture_details",
           "tableTo": "documents",
           "columnsFrom": [
-            "videoUrl"
+            "videoId"
           ],
           "columnsTo": [
             "id"
@@ -143,12 +143,12 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "furniture_details_imageUrl_documents_id_fk": {
-          "name": "furniture_details_imageUrl_documents_id_fk",
+        "furniture_details_imageId_documents_id_fk": {
+          "name": "furniture_details_imageId_documents_id_fk",
           "tableFrom": "furniture_details",
           "tableTo": "documents",
           "columnsFrom": [
-            "imageUrl"
+            "imageId"
           ],
           "columnsTo": [
             "id"
@@ -184,95 +184,95 @@
           "notNull": true,
           "autoincrement": false
         },
-        "password": {
-          "name": "password",
-          "type": "text",
+        "passwordHash": {
+          "name": "passwordHash",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "title": {
           "name": "title",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "firstName": {
           "name": "firstName",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "lastName": {
           "name": "lastName",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "gender": {
           "name": "gender",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "address1": {
           "name": "address1",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "address2": {
           "name": "address2",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "('')"
+          "default": "''"
         },
         "address3": {
           "name": "address3",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "('')"
+          "default": "''"
         },
         "postcode": {
           "name": "postcode",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "description": {
           "name": "description",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "('')"
+          "default": "''"
         },
         "email": {
           "name": "email",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "telephone": {
           "name": "telephone",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "profileUrl": {
-          "name": "profileUrl",
+        "profileImageId": {
+          "name": "profileImageId",
           "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
@@ -281,12 +281,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "users_profileUrl_documents_id_fk": {
-          "name": "users_profileUrl_documents_id_fk",
+        "users_profileImageId_documents_id_fk": {
+          "name": "users_profileImageId_documents_id_fk",
           "tableFrom": "users",
           "tableTo": "documents",
           "columnsFrom": [
-            "profileUrl"
+            "profileImageId"
           ],
           "columnsTo": [
             "id"
@@ -308,6 +308,12 @@
           "name": "users_username_unique",
           "columns": [
             "username"
+          ]
+        },
+        "users_email_unique": {
+          "name": "users_email_unique",
+          "columns": [
+            "email"
           ]
         }
       }

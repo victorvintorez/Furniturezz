@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1729727859313,
-      "tag": "0000_perfect_mandarin",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1729867374222,
-      "tag": "0001_short_chat",
+      "when": 1730459357559,
+      "tag": "0000_nosy_ghost_rider",
       "breakpoints": true
     }
   ]
