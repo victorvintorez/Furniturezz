@@ -16,7 +16,7 @@ export const lucia = new Lucia(adapter, {
 		return {
 			username: attributes.username,
 			email: attributes.email,
-			profileUrl: attributes.profileUrl,
+			profileUrl: attributes.profileImageId,
 		};
 	},
 });
@@ -28,7 +28,7 @@ declare module "lucia" {
 		DatabaseUserAttributes: {
 			username: string;
 			email: string;
-			profileUrl: string | number;
+			profileImageId: number;
 		};
 	}
 }
@@ -58,7 +58,7 @@ export const AuthService = new Elysia({ name: "Auth.Service" })
 				});
 			}
 
-			return { user, session };
+			return { user: user, session: session };
 		},
 	)
 	.macro(({ onBeforeHandle }) => ({
@@ -67,4 +67,5 @@ export const AuthService = new Elysia({ name: "Auth.Service" })
 				if (!user) return error(401, "Unauthorized");
 			});
 		},
-	}));
+	}))
+	.as("plugin");

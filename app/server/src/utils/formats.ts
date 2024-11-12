@@ -1,29 +1,33 @@
-import { FormatRegistry } from "@sinclair/typebox";
+import { t } from "elysia";
 
-const formats = {
-	IsUkTelephone: (x: string) => /^(?:0|\+?44)(?:\d\s?){9,10}$/.test(x),
-	IsUkPostcode: (x: string) =>
-		/^([A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}|GIR ?0A{2})$/.test(x),
-	IsValidTitle: (x: string) =>
-		["Mr", "Mrs", "Miss", "Ms", "Dr", "Prof", "Rev", "Lord", "Lady"].includes(
-			x,
-		),
-	IsValidGender: (x: string) =>
-		["Male", "Female", "Non-Binary", "Not Listed", "Other"].includes(x),
-	IsValidYear: (x: string) =>
-		typeof Number.parseInt(x) === "number" &&
-		Number.parseInt(x) >= 1900 &&
-		Number.parseInt(x) <= new Date().getFullYear(),
-	IsValidDocType: (x: string) =>
-		["profileImage", "furnitureImage", "furnitureVideo"].includes(x),
-	IsValidPassword: (x: string) =>
-		/^.*(?=.{8,})(?=.*[a-zA-Z])(?=.*\d)(?=.*[!#$%&? "]).*$/.test(x),
+export const formats = {
+	IsUkTelephone: t.RegExp(/^(?:0|\+?44)(?:\d\s?){9,10}$/),
+	IsUkPostcode: t.RegExp(/^([A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}|GIR ?0A{2})$/),
+	IsValidTitle: t.Union([
+		t.Literal("Mr"),
+		t.Literal("Mrs"),
+		t.Literal("Miss"),
+		t.Literal("Ms"),
+		t.Literal("Dr"),
+		t.Literal("Prof"),
+		t.Literal("Rev"),
+		t.Literal("Lord"),
+		t.Literal("Lady"),
+	]),
+	IsValidGender: t.Union([
+		t.Literal("Male"),
+		t.Literal("Female"),
+		t.Literal("Non-Binary"),
+		t.Literal("Not Listed"),
+		t.Literal("Other"),
+	]),
+	IsValidYear: t.RegExp(/^(19\d{2}|20\d{2})$/),
+	IsValidDocType: t.Union([
+		t.Literal("profileImage"),
+		t.Literal("furnitureImage"),
+		t.Literal("furnitureVideo"),
+	]),
+	IsValidPassword: t.RegExp(
+		/^.*(?=.{8,})(?=.*[a-zA-Z])(?=.*\d)(?=.*[!#$%&? "]).*$/,
+	),
 };
-
-FormatRegistry.Set("uk-telephone", formats.IsUkTelephone);
-FormatRegistry.Set("uk-postcode", formats.IsUkPostcode);
-FormatRegistry.Set("title", formats.IsValidTitle);
-FormatRegistry.Set("gender", formats.IsValidGender);
-FormatRegistry.Set("year", formats.IsValidYear);
-FormatRegistry.Set("doc-type", formats.IsValidDocType);
-FormatRegistry.Set("password", formats.IsValidPassword);

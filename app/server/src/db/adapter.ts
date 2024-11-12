@@ -197,13 +197,13 @@ export type MySqlUserTable = MySqlTableWithColumns<{
 			},
 			object
 		>;
-		profileUrl: MySqlColumn<
+		profileImageId: MySqlColumn<
 			{
 				name: string;
 				tableName: string;
 				dataType: ColumnDataType;
 				columnType: string;
-				data: string | number;
+				data: number;
 				driverParam: string | number;
 				notNull: true;
 				hasDefault: boolean;
@@ -239,13 +239,13 @@ const transformKeyDbSessionToLuciaSession = (raw: string): DatabaseSession => {
 const transformMySqlUserToLuciaUser = (
 	raw: InferSelectModel<MySqlUserTable>,
 ): DatabaseUser => {
-	const { id, username, email, profileUrl } = raw;
+	const { id, username, email, profileImageId } = raw;
 	return {
 		id,
 		attributes: {
 			username: username,
 			email: email,
-			profileUrl: profileUrl,
+			profileImageId: profileImageId,
 		},
 	};
 };
