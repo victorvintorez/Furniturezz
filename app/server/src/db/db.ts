@@ -12,7 +12,7 @@ const connection = await createConnection({
 	password: env.MYSQL_PASSWORD,
 	database: env.MYSQL_DATABASE,
 });
-const mysql = drizzle(connection, { casing: "snake_case" });
+const mysql = drizzle(connection);
 await migrate(mysql, { migrationsFolder: "./src/db/.migrations" });
 
 // Setup KeyDB

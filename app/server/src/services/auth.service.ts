@@ -8,6 +8,7 @@ const adapter = new DrizzleMySqlAdapterWithKeyDb(mysql, keydb, usersTable);
 
 export const lucia = new Lucia(adapter, {
 	sessionCookie: {
+		name: "session",
 		attributes: {
 			secure: process.env.NODE_ENV === "production",
 		},
@@ -16,7 +17,7 @@ export const lucia = new Lucia(adapter, {
 		return {
 			username: attributes.username,
 			email: attributes.email,
-			profileUrl: attributes.profileImageId,
+			profileImageId: attributes.profileImageId,
 		};
 	},
 });
@@ -34,17 +35,21 @@ declare module "lucia" {
 }
 
 export const AuthService = new Elysia({ name: "Auth.Service" })
-	.derive(
-		async (ctx): Promise<{ user: User | null; session: Session | null }> => {
-			const cookie = ctx.request.headers.get("Cookie") ?? "";
-			const sessionId = lucia.readSessionCookie(cookie);
-			if (!sessionId) return { user: null, session: null };
+	.resolve(
+		async ({ cookie, request }): Promise<{ user: User | null; session: Session | null; }> => {
+			const sessionCookie = request.headers.get("Cookie") ?? "";
+
+			const sessionId = lucia.readSessionCookie(sessionCookie);
+
+			if(!sessionId) return { user: null, session: null };
+
+			console.log(sessionId);
 
 			const { session, user } = await lucia.validateSession(sessionId);
 
 			if (session?.fresh) {
 				const sessionCookie = lucia.createSessionCookie(session.id);
-				ctx.cookie[sessionCookie.name].set({
+				cookie[sessionCookie.name].set({
 					value: sessionCookie.value,
 					...sessionCookie.attributes,
 				});
@@ -52,7 +57,7 @@ export const AuthService = new Elysia({ name: "Auth.Service" })
 
 			if (!session) {
 				const sessionCookie = lucia.createBlankSessionCookie();
-				ctx.cookie[sessionCookie.name].set({
+				cookie[sessionCookie.name].set({
 					value: sessionCookie.value,
 					...sessionCookie.attributes,
 				});
@@ -62,8 +67,11 @@ export const AuthService = new Elysia({ name: "Auth.Service" })
 		},
 	)
 	.macro(({ onBeforeHandle }) => ({
-		isSignedIn() {
-			onBeforeHandle(({ user }) => {
+		requireAuth(enabled: boolean) {
+			if (!enabled) return;
+			onBeforeHandle(({ user, session }) => {
+				console.log(session?.id);
+				console.log(user?.id);
 				if (!user) return error(401, "Unauthorized");
 			});
 		},
