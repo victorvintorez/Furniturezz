@@ -7,17 +7,14 @@ import { eq, or } from "drizzle-orm";
 import { AuthService, lucia } from "../services/auth.service";
 import { formats } from "../utils/formats";
 import { logger } from "@bogeychan/elysia-logger";
+import { unlink } from "node:fs/promises";
 
 export const AuthController = new Elysia({ prefix: "/auth" })
 	.use(AuthService)
 	.use(logger())
 	.post(
 		"/login",
-		async ({ body, error, cookie, user, log }) => {
-			if (user) {
-				return error(400, "Already Logged In");
-			}
-
+		async ({ body, error, cookie, log }) => {
 			const queriedUser = await mysql
 				.select()
 				.from(usersTable)
@@ -65,6 +62,7 @@ export const AuthController = new Elysia({ prefix: "/auth" })
 			}
 		},
 		{
+			requireAnonymous: true,
 			body: t.Object({
 				username: t.String(),
 				password: formats.IsValidPassword,
@@ -108,7 +106,7 @@ export const AuthController = new Elysia({ prefix: "/auth" })
 					.insert(documentsTable)
 					.values({
 						documentType: "profileImage",
-						documentUrl: profileUrl,
+						documentUrl: profileUrl.replace("./www", ""),
 					})
 					.$returningId();
 
@@ -158,6 +156,7 @@ export const AuthController = new Elysia({ prefix: "/auth" })
 					await mysql
 						.delete(documentsTable)
 						.where(eq(documentsTable.id, profileImage[0].id));
+					await unlink(profileUrl);
 					log.error(e);
 					return error(400, "Error Saving User - User may already exist");
 				}
@@ -167,11 +166,12 @@ export const AuthController = new Elysia({ prefix: "/auth" })
 			}
 		},
 		{
+			requireAnonymous: true,
 			body: t.Composite([
 				t.Omit(UserModel.insert, ["id", "passwordHash", "profileImageId"]),
 				t.Object({
 					password: formats.IsValidPassword,
-					profileImage: t.File({ type: "image", maxSize: "100m" }),
+					profileImage: t.File({ type: "image", maxSize: "10m" }),
 				}),
 			]),
 		},

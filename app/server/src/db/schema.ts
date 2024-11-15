@@ -40,9 +40,6 @@ export const furnitureDetailsTable = table("furniture_details", {
 	videoId: bigint({ mode: "number", unsigned: true })
 		.notNull()
 		.references(() => documentsTable.id),
-	imageId: bigint({ mode: "number", unsigned: true })
-		.notNull()
-		.references(() => documentsTable.id),
 });
 
 export const documentsTable = table("documents", {
@@ -51,10 +48,21 @@ export const documentsTable = table("documents", {
 	documentUrl: varchar({ length: 255 }).notNull(),
 });
 
+export const furnitureImagesTable = table("furniture_images", {
+	id: serial().primaryKey(),
+	furnitureId: bigint({ mode: "number", unsigned: true })
+		.notNull()
+		.references(() => furnitureDetailsTable.id),
+	imageId: bigint({ mode: "number", unsigned: true })
+		.notNull()
+		.references(() => documentsTable.id),
+});
+
 export const Table = {
 	users: usersTable,
 	furniture_details: furnitureDetailsTable,
 	documents: documentsTable,
+	furniture_images: furnitureImagesTable,
 } as const;
 
 export type Table = typeof Table;

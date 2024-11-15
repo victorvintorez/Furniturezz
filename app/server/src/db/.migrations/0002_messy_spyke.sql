@@ -1,0 +1,2 @@
+ALTER TABLE `furniture_details` ADD `imageId` bigint unsigned NOT NULL;--> statement-breakpoint
+ALTER TABLE `furniture_details` ADD CONSTRAINT `furniture_details_imageId_documents_id_fk` FOREIGN KEY (`imageId`) REFERENCES `documents`(`id`) ON DELETE no action ON UPDATE no action;

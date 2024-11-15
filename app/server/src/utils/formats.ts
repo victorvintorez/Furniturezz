@@ -21,7 +21,6 @@ export const formats = {
 		t.Literal("Not Listed"),
 		t.Literal("Other"),
 	]),
-	IsValidYear: t.RegExp(/^(19\d{2}|20\d{2})$/),
 	IsValidDocType: t.Union([
 		t.Literal("profileImage"),
 		t.Literal("furnitureImage"),

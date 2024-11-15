@@ -8,6 +8,20 @@
       "when": 1730459357559,
       "tag": "0000_nosy_ghost_rider",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1731675873354,
+      "tag": "0001_bored_spot",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1731676192321,
+      "tag": "0002_messy_spyke",
+      "breakpoints": true
     }
   ]
 }

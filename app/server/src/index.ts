@@ -5,6 +5,8 @@ import swagger from "@elysiajs/swagger";
 import { serveSpa } from "./utils/serveSpa";
 import { AuthController } from "./controllers/auth.controller";
 import { logger } from "@bogeychan/elysia-logger";
+import { UserController } from "./controllers/user.controller";
+import { FurnitureDetailsController } from "./controllers/furnitureDetails.controller";
 
 const app = new Elysia()
 	.use(swagger())
@@ -20,7 +22,9 @@ const app = new Elysia()
 	)
 	.use(serveSpa)
 	.use(AuthService)
-	.group("/api", (app) => app.use(AuthController))
+	.group("/api", (app) =>
+		app.use(AuthController).use(UserController).use(FurnitureDetailsController),
+	)
 	.listen(env.SERVER_PORT);
 
 console.log(

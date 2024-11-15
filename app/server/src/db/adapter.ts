@@ -1,5 +1,6 @@
 import {
 	eq,
+	and,
 	type ColumnDataType,
 	type GeneratedColumnConfig,
 	type InferSelectModel,
@@ -11,6 +12,7 @@ import type {
 import type { MySql2Database } from "drizzle-orm/mysql2";
 import type { Adapter, DatabaseSession, DatabaseUser, UserId } from "lucia";
 import type { createClient } from "redis";
+import { documentsTable } from "./schema";
 
 export class DrizzleMySqlAdapterWithKeyDb implements Adapter {
 	private mysqlDb: MySql2Database;
@@ -39,7 +41,7 @@ export class DrizzleMySqlAdapterWithKeyDb implements Adapter {
 	private async getSession(sessionId: string): Promise<DatabaseSession | null> {
 		const result = await this.keyDb.get(this.sessionKey(sessionId));
 		if (!result) return null;
-		return transformKeyDbSessionToLuciaSession(result);
+		return this.transformKeyDbSessionToLuciaSession(result);
 	}
 
 	private async getUserFromSessionId(
@@ -60,7 +62,7 @@ export class DrizzleMySqlAdapterWithKeyDb implements Adapter {
 			.from(this.userTable)
 			.where(eq(this.userTable.id, session.userId));
 		if (user.length !== 1) return null;
-		return transformMySqlUserToLuciaUser(user[0]);
+		return this.transformMySqlUserToLuciaUser(user[0]);
 	}
 
 	public async deleteSession(sessionId: string): Promise<void> {
@@ -134,6 +136,52 @@ export class DrizzleMySqlAdapterWithKeyDb implements Adapter {
 		await Promise.all(
 			expiredSessions.map((session) => this.deleteSession(session.id)),
 		);
+	}
+
+	private transformKeyDbSessionToLuciaSession(raw: string): DatabaseSession {
+		const {
+			id,
+			userId,
+			expiresAt: expiresAtUnix,
+			...attributes
+		} = JSON.parse(raw);
+		return {
+			userId,
+			id,
+			expiresAt: new Date(expiresAtUnix),
+			attributes,
+		};
+	}
+
+	private async transformMySqlUserToLuciaUser(
+		raw: InferSelectModel<MySqlUserTable>,
+	): Promise<DatabaseUser> {
+		const { id, username, email, profileImageId } = raw;
+		const {
+			_,
+			$inferInsert,
+			$inferSelect,
+			getSQL,
+			shouldOmitSQLParens,
+			...documentsColumns
+		} = documentsTable;
+		const document = await this.mysqlDb
+			.select({ url: documentsColumns.documentUrl })
+			.from(documentsTable)
+			.where(
+				and(
+					eq(documentsTable.id, profileImageId),
+					eq(documentsTable.documentType, "profileImage"),
+				),
+			);
+		return {
+			id,
+			attributes: {
+				username: username,
+				email: email,
+				profileImageUrl: document[0].url,
+			},
+		};
 	}
 }
 
@@ -220,32 +268,3 @@ export type MySqlUserTable = MySqlTableWithColumns<{
 	schema: string | undefined;
 	name: string;
 }>;
-
-const transformKeyDbSessionToLuciaSession = (raw: string): DatabaseSession => {
-	const {
-		id,
-		userId,
-		expiresAt: expiresAtUnix,
-		...attributes
-	} = JSON.parse(raw);
-	return {
-		userId,
-		id,
-		expiresAt: new Date(expiresAtUnix * 1000),
-		attributes,
-	};
-};
-
-const transformMySqlUserToLuciaUser = (
-	raw: InferSelectModel<MySqlUserTable>,
-): DatabaseUser => {
-	const { id, username, email, profileImageId } = raw;
-	return {
-		id,
-		attributes: {
-			username: username,
-			email: email,
-			profileImageId: profileImageId,
-		},
-	};
-};

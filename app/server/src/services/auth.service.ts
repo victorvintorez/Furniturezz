@@ -17,7 +17,7 @@ export const lucia = new Lucia(adapter, {
 		return {
 			username: attributes.username,
 			email: attributes.email,
-			profileImageId: attributes.profileImageId,
+			profileImageUrl: attributes.profileImageUrl,
 		};
 	},
 });
@@ -29,21 +29,22 @@ declare module "lucia" {
 		DatabaseUserAttributes: {
 			username: string;
 			email: string;
-			profileImageId: number;
+			profileImageUrl: string;
 		};
 	}
 }
 
 export const AuthService = new Elysia({ name: "Auth.Service" })
 	.resolve(
-		async ({ cookie, request }): Promise<{ user: User | null; session: Session | null; }> => {
+		async ({
+			cookie,
+			request,
+		}): Promise<{ user: User | null; session: Session | null }> => {
 			const sessionCookie = request.headers.get("Cookie") ?? "";
 
 			const sessionId = lucia.readSessionCookie(sessionCookie);
 
-			if(!sessionId) return { user: null, session: null };
-
-			console.log(sessionId);
+			if (!sessionId) return { user: null, session: null };
 
 			const { session, user } = await lucia.validateSession(sessionId);
 
@@ -69,10 +70,14 @@ export const AuthService = new Elysia({ name: "Auth.Service" })
 	.macro(({ onBeforeHandle }) => ({
 		requireAuth(enabled: boolean) {
 			if (!enabled) return;
-			onBeforeHandle(({ user, session }) => {
-				console.log(session?.id);
-				console.log(user?.id);
+			onBeforeHandle(({ user }) => {
 				if (!user) return error(401, "Unauthorized");
+			});
+		},
+		requireAnonymous(enabled: boolean) {
+			if (!enabled) return;
+			onBeforeHandle(({ user }) => {
+				if (user) return error(401, "Already Logged In");
 			});
 		},
 	}))
