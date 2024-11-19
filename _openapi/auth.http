@@ -1,0 +1,12 @@
+@path = /api/auth
+
+// Login
+POST http://{{domain}}/{{path}}/login
+Content-Type: application/json
+
+{
+    "username": "vvintorez",
+    "password": "Password123!"
+}
+
+###

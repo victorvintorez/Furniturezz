@@ -1,0 +1,6 @@
+@path = /api/user
+
+// Currently Logged in User Details
+GET http://{{domain}}/{{path}}/
+
+###
