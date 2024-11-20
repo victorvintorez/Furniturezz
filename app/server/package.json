@@ -26,5 +26,8 @@
 		"@types/bun": "^1.1.13",
 		"drizzle-kit": "^0.25.0"
 	},
+	"overrides": {
+		"@sinclair/typebox": "0.32.34"
+	},
 	"module": "src/index.js"
 }

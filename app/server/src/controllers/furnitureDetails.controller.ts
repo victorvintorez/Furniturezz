@@ -139,13 +139,12 @@ export const FurnitureDetailsController = new Elysia({ prefix: "/furniture" })
 		},
 		{
 			requireAuth: true,
-			body: t.Composite([
-				t.Omit(FurnitureDetailsModel.insert, ["id", "userId", "videoId"]),
-				t.Object({
-					video: t.File({ type: "video", maxSize: "100m" }),
-					images: t.Files({ type: "image", maxSize: "25m", maxItems: 5 }),
-				}),
-			]),
+			type: "formdata",
+			body: t.Object({
+				...t.Omit(FurnitureDetailsModel.insert, ["id", "userId", "videoId"]).properties,
+					video: t.File({type: "video", maxSize: "100m"}),
+					images: t.Files({type: "image", maxSize: "10m", maxCount: 5}),
+			}),
 		},
 	)
 	.patch(
