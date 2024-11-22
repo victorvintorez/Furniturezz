@@ -4,21 +4,26 @@ import {ModalsProvider} from "@mantine/modals";
 import {FC, PropsWithChildren} from "react";
 import Header from "./Header.tsx";
 import {theme} from "../../helpers/theme.ts";
+import Navigation from "./Navigation.tsx";
+import {useLocation} from "@tanstack/react-router";
+import MainContent from "./MainContent.tsx";
 
 const Layout: FC<PropsWithChildren> = ({children}) => {
+	const location = useLocation();
+
 	return (
 		<MantineProvider theme={theme}>
 			<ModalsProvider>
-				<AppShell header={{height: 80}}>
-					<AppShell.Header>
-						<Header/>
-					</AppShell.Header>
-					<AppShell.Navbar>
-
-					</AppShell.Navbar>
-					<AppShell.Main>
+				<AppShell withBorder header={{height: 80}} navbar={{
+					width: 300,
+					breakpoint: "lg",
+					collapsed: {desktop: location.pathname !== "/", mobile: location.pathname !== "/"}
+				}}>
+					<Header/>
+					<Navigation/>
+					<MainContent>
 						{children}
-					</AppShell.Main>
+					</MainContent>
 				</AppShell>
 			</ModalsProvider>
 		</MantineProvider>
