@@ -1,8 +1,6 @@
-import {createFileRoute, redirect} from '@tanstack/react-router'
+import {createFileRoute} from '@tanstack/react-router'
 import {Anchor, Card, Center, Divider, Stack, Text, Title} from '@mantine/core'
 import {useToggle} from '@mantine/hooks'
-import {queryClient} from './__root.tsx'
-import {getUserDetails} from '../queries/auth.ts'
 import RegisterCard from '../components/auth/RegisterCard.tsx'
 import LoginCard from '../components/auth/LoginCard.tsx'
 
@@ -42,15 +40,4 @@ const Index = () => {
 
 export const Route = createFileRoute('/auth')({
 	component: Index,
-	beforeLoad: async () => {
-		const data = await queryClient.ensureQueryData({
-			queryKey: ['auth.user'],
-			queryFn: async () => await getUserDetails(),
-		})
-		if (data !== null) {
-			throw redirect({
-				to: '/',
-			})
-		}
-	},
 })

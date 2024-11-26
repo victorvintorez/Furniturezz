@@ -1,7 +1,7 @@
 import {Anchor, Button, PasswordInput, Stack, TextInput} from "@mantine/core";
 import {useForm} from "@mantine/form";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {login} from "../../queries/auth.ts";
+import {auth} from "../../queries/auth.ts";
 
 type FormValues = {
 	username: string;
@@ -22,7 +22,8 @@ const LoginCard = () => {
 	})
 	const queryClient = useQueryClient();
 	const mutation = useMutation({
-		mutationFn: async (values: FormValues) => await login(values.username, values.password),
+		mutationKey: auth.loginMutOptions.key,
+		mutationFn: async (values: FormValues) => await auth.loginMutOptions.fn(values.username, values.password),
 		onSuccess: () => queryClient.invalidateQueries({queryKey: ["auth.user"], refetchType: "active"})
 	});
 
@@ -31,9 +32,9 @@ const LoginCard = () => {
 			<Stack align="stretch" gap={0}>
 				<TextInput withAsterisk size="lg" label="Username"
 				           placeholder="johndoe@email.com" px="lg" pt="sm" {...form.getInputProps("username")} />
-					<PasswordInput withAsterisk size="lg" label="Password"
-					               placeholder="Password" px="lg" pt="sm" {...form.getInputProps("password")} />
-					<Anchor px="lg" pb="sm">Forgotten Password?</Anchor>
+				<PasswordInput withAsterisk size="lg" label="Password"
+				               placeholder="Password" px="lg" pt="sm" {...form.getInputProps("password")} />
+				<Anchor px="lg" pb="sm">Forgotten Password?</Anchor>
 				<Button fullWidth type="submit" loading={mutation.isPending}>Login</Button>
 			</Stack>
 		</form>

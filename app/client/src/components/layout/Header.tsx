@@ -4,17 +4,14 @@ import {Link} from "../Link.tsx";
 import {IconLogin, IconMoon, IconSun, IconSunMoon} from "@tabler/icons-react";
 import Icon from "../../assets/chair-logo.svg";
 import {useQuery} from "@tanstack/react-query";
-import {User} from "../../types/auth.ts";
+import {auth} from "../../queries/auth.ts";
 
 const Header: FC = () => {
 	const {colorScheme, toggleColorScheme} = useMantineColorScheme();
-	const {isPending, data} = useQuery<boolean, boolean, User>({
-		queryKey: ["auth.user"], queryFn: async () => {
-			if (!document.cookie.includes("session=")) return null;
-			const res = await fetch("/api/user/");
-			if (!res.ok) throw new Error("Failed to fetch user data");
-			return res.json();
-		}
+	const {data, isPending} = useQuery({
+		queryKey: auth.userDetailOptions.key,
+		queryFn: auth.userDetailOptions.fn,
+		staleTime: auth.userDetailOptions.stale,
 	})
 
 	return (
@@ -27,7 +24,9 @@ const Header: FC = () => {
 					</Group>
 				</Link.Button>
 				<Group>
-					{data ? (
+					{isPending ? (
+						"Loading..."
+					) : data ? (
 						<>{data.username}</>
 					) : (
 						<Link.Button loading={isPending} to="/auth" size="lg" variant="subtle"
