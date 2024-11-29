@@ -3,7 +3,7 @@ import {AppShell, MantineProvider} from "@mantine/core";
 import {ModalsProvider} from "@mantine/modals";
 import {FC, PropsWithChildren} from "react";
 import Header from "./Header.tsx";
-import {theme} from "../../helpers/theme.ts";
+import {theme} from "../../utils/theme.ts";
 import Navigation from "./Navigation.tsx";
 import {useLocation} from "@tanstack/react-router";
 import MainContent from "./MainContent.tsx";

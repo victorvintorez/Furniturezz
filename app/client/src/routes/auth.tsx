@@ -1,8 +1,10 @@
-import {createFileRoute} from '@tanstack/react-router'
+import {createFileRoute, redirect} from '@tanstack/react-router'
 import {Anchor, Card, Center, Divider, Stack, Text, Title} from '@mantine/core'
 import {useToggle} from '@mantine/hooks'
 import RegisterCard from '../components/auth/RegisterCard.tsx'
 import LoginCard from '../components/auth/LoginCard.tsx'
+import {auth} from "../queries/auth.ts";
+import {User} from "../types/auth.ts";
 
 const Index = () => {
 	const [type, toggle] = useToggle<'login' | 'register'>(['login', 'register'])
@@ -40,4 +42,16 @@ const Index = () => {
 
 export const Route = createFileRoute('/auth')({
 	component: Index,
+	beforeLoad: async ({context}) => {
+		const data: User = await context.queryClient.ensureQueryData({
+			queryKey: auth.userDetailOptions.key,
+			queryFn: auth.userDetailOptions.fn,
+			staleTime: auth.userDetailOptions.stale,
+		})
+		if (data) {
+			throw redirect({
+				to: '/',
+			})
+		}
+	}
 })

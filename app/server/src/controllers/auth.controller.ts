@@ -49,13 +49,8 @@ export const AuthController = new Elysia({ prefix: "/auth" })
 					...sessionCookie.attributes,
 				});
 
-				// Return to homepage
-				return new Response(null, {
-					status: 302,
-					headers: {
-						Location: "/",
-					},
-				});
+				// 200 OK
+				return;
 			} catch (e) {
 				log.error(e);
 				return error(500, "Error Creating Session - Try Logging In");
@@ -141,13 +136,8 @@ export const AuthController = new Elysia({ prefix: "/auth" })
 							...sessionCookie.attributes,
 						});
 
-						// Return to homepage
-						return new Response(null, {
-							status: 302,
-							headers: {
-								Location: "/",
-							},
-						});
+						// 200 OK
+						return;
 					} catch (e) {
 						log.error(e);
 						return error(500, "Error Creating Session - Try Logging In");
@@ -189,5 +179,6 @@ export const AuthController = new Elysia({ prefix: "/auth" })
 			...sessionCookie.attributes,
 		});
 
+		// 200 OK
 		return;
 	});

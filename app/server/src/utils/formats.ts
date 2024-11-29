@@ -19,7 +19,6 @@ export const formats = {
 		t.Literal("Female"),
 		t.Literal("Non-Binary"),
 		t.Literal("Not Listed"),
-		t.Literal("Other"),
 	]),
 	IsValidDocType: t.Union([
 		t.Literal("profileImage"),

@@ -3,9 +3,11 @@ import {
 	Button as MantineButton,
 	NavLink as MantineNavLink,
 	Anchor as MantineAnchor,
+	Menu as MantineMenu,
 	ButtonProps as MantineButtonProps,
 	NavLinkProps as MantineNavLinkProps,
-	AnchorProps as MantineAnchorProps
+	AnchorProps as MantineAnchorProps,
+	MenuItemProps as MantineMenuItemProps
 } from "@mantine/core";
 import {createLink, LinkComponent} from "@tanstack/react-router";
 
@@ -57,8 +59,24 @@ const Anchor: LinkComponent<typeof MantineAnchorComponent> = (
 	return <CreatedAnchorComponent preload="intent" {...props} />;
 }
 
+// This is a custom Mantine Menu.Item component with Tanstack Router integration
+interface MantineMenuItemComponentProps extends Omit<MantineMenuItemProps, 'href'> {}
+
+const MantineMenuItemComponent = forwardRef<HTMLAnchorElement, MantineMenuItemComponentProps>((props, ref) => {
+	return <MantineMenu.Item ref={ref} {...props} component="a"/>;
+})
+
+const CreatedMenuItemComponent = createLink(MantineMenuItemComponent);
+
+const MenuItem: LinkComponent<typeof MantineMenuItemComponent> = (
+	props
+) => {
+	return <CreatedMenuItemComponent preload="intent" {...props} />;
+}
+
 export const Link = {
 	Button,
 	NavLink,
-	Anchor
+	Anchor,
+	MenuItem
 }

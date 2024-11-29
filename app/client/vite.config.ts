@@ -10,6 +10,9 @@ export default defineConfig({
 			"^/api": {
 				target: "http://localhost:8000",
 			},
+			"^/upload": {
+				target: "http://localhost:8000",
+			}
 		}
 	},
 	plugins: [react(), TanStackRouterVite({
