@@ -1,0 +1,19 @@
+.control {
+	height: 100%;
+	width: var(--mantine-spacing-xl);
+	border-radius: unset;
+	border: 0;
+
+	background: rgb(from var(--mantine-color-gray-1) r g b / 50%);
+
+	&[data-inactive] {
+		opacity: 0;
+		cursor: default;
+	}
+}
+
+.controls {
+	height: 100%;
+	padding: 0;
+	top: 0;
+}

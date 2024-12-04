@@ -1,6 +1,6 @@
 import { createInsertSchema, createSelectSchema } from "drizzle-typebox";
-import { Table } from "../db/schema";
 import { t } from "elysia";
+import { Table } from "../db/tables";
 import { formats } from "../utils/formats";
 
 export const UserModel = {

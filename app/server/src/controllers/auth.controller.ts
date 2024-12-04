@@ -1,13 +1,13 @@
-import { Elysia, t } from "elysia";
-import { UserModel } from "../models/user.model";
+import { unlink } from "node:fs/promises";
+import { logger } from "@bogeychan/elysia-logger";
 import { hash, password } from "bun";
-import { mysql } from "../db/db";
-import { documentsTable, usersTable } from "../db/schema";
 import { eq, or } from "drizzle-orm";
+import { Elysia, t } from "elysia";
+import { mysql } from "../db/db";
+import {usersTable } from "../db/schema";
+import { UserModel } from "../models/user.model";
 import { AuthService, lucia } from "../services/auth.service";
 import { formats } from "../utils/formats";
-import { logger } from "@bogeychan/elysia-logger";
-import { unlink } from "node:fs/promises";
 
 export const AuthController = new Elysia({ prefix: "/auth" })
 	.use(AuthService)
@@ -15,24 +15,20 @@ export const AuthController = new Elysia({ prefix: "/auth" })
 	.post(
 		"/login",
 		async ({ body, error, cookie, log }) => {
-			const queriedUser = await mysql
-				.select()
-				.from(usersTable)
-				.where(
-					or(
-						eq(usersTable.username, body.username),
-						eq(usersTable.email, body.username),
-					),
-				)
-				.limit(1);
+			const queriedUser = await mysql.query.usersTable.findFirst({
+				where: or(
+					eq(usersTable.username, body.username),
+					eq(usersTable.email, body.username),
+				),
+			})
 
-			if (queriedUser.length === 0) {
+			if(!queriedUser) {
 				return error(400, "Invalid Username/Email");
 			}
 
 			const unhashPassword = await password.verify(
 				body.password,
-				queriedUser[0].passwordHash,
+				queriedUser.passwordHash,
 				"argon2id",
 			);
 
@@ -42,7 +38,7 @@ export const AuthController = new Elysia({ prefix: "/auth" })
 
 			try {
 				// Create new session cookie
-				const session = await lucia.createSession(queriedUser[0].id, {});
+				const session = await lucia.createSession(queriedUser.id, {});
 				const sessionCookie = lucia.createSessionCookie(session.id);
 				cookie[sessionCookie.name].set({
 					value: sessionCookie.value,
@@ -96,15 +92,6 @@ export const AuthController = new Elysia({ prefix: "/auth" })
 				const profileUrl = `./www/upload/profileImage/${body.username}-${hash(await body.profileImage.arrayBuffer())}.${body.profileImage.name.split(".").pop()}`;
 				await Bun.write(profileUrl, await body.profileImage.arrayBuffer());
 
-				// Save image location in database
-				const profileImage = await mysql
-					.insert(documentsTable)
-					.values({
-						documentType: "profileImage",
-						documentUrl: profileUrl.replace("./www", ""),
-					})
-					.$returningId();
-
 				try {
 					// Save user in database
 					const user = await mysql
@@ -123,7 +110,7 @@ export const AuthController = new Elysia({ prefix: "/auth" })
 							description: body.description,
 							email: body.email,
 							telephone: body.telephone,
-							profileImageId: profileImage[0].id,
+							profileImageUrl: profileUrl.replace("./www", ""),
 						})
 						.$returningId();
 
@@ -143,9 +130,6 @@ export const AuthController = new Elysia({ prefix: "/auth" })
 						return error(500, "Error Creating Session - Try Logging In");
 					}
 				} catch (e) {
-					await mysql
-						.delete(documentsTable)
-						.where(eq(documentsTable.id, profileImage[0].id));
 					await unlink(profileUrl);
 					log.error(e);
 					return error(400, "Error Saving User - User may already exist");
@@ -158,7 +142,7 @@ export const AuthController = new Elysia({ prefix: "/auth" })
 		{
 			requireAnonymous: true,
 			body: t.Composite([
-				t.Omit(UserModel.insert, ["id", "passwordHash", "profileImageId"]),
+				t.Omit(UserModel.insert, ["id", "passwordHash", "profileImageUrl"]),
 				t.Object({
 					password: formats.IsValidPassword,
 					profileImage: t.File({ type: "image", maxSize: "10m" }),

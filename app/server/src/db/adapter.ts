@@ -1,27 +1,27 @@
 import {
-	eq,
-	and,
 	type ColumnDataType,
 	type GeneratedColumnConfig,
 	type InferSelectModel,
+	eq,
 } from "drizzle-orm";
 import type {
 	MySqlColumn,
 	MySqlTableWithColumns,
 } from "drizzle-orm/mysql-core";
-import type { MySql2Database } from "drizzle-orm/mysql2";
+import type { MySqlDatabase } from "drizzle-orm/mysql2";
 import type { Adapter, DatabaseSession, DatabaseUser, UserId } from "lucia";
 import type { createClient } from "redis";
-import { documentsTable } from "./schema";
 
 export class DrizzleMySqlAdapterWithKeyDb implements Adapter {
-	private mysqlDb: MySql2Database;
+	// biome-ignore lint/suspicious/noExplicitAny: too hard to type this correctly
+	private mysqlDb: MySqlDatabase<any, any, any, any>;
 	private keyDb: ReturnType<typeof createClient>;
 
-	private userTable: MySqlUserTable;
+	private readonly userTable: MySqlUserTable;
 
 	constructor(
-		mysqlDb: MySql2Database,
+		// biome-ignore lint/suspicious/noExplicitAny: too hard to type this correctly
+		mysqlDb: MySqlDatabase<any, any, any, any>,
 		keyDb: ReturnType<typeof createClient>,
 		userTable: MySqlUserTable,
 	) {
@@ -156,30 +156,13 @@ export class DrizzleMySqlAdapterWithKeyDb implements Adapter {
 	private async transformMySqlUserToLuciaUser(
 		raw: InferSelectModel<MySqlUserTable>,
 	): Promise<DatabaseUser> {
-		const { id, username, email, profileImageId } = raw;
-		const {
-			_,
-			$inferInsert,
-			$inferSelect,
-			getSQL,
-			shouldOmitSQLParens,
-			...documentsColumns
-		} = documentsTable;
-		const document = await this.mysqlDb
-			.select({ url: documentsColumns.documentUrl })
-			.from(documentsTable)
-			.where(
-				and(
-					eq(documentsTable.id, profileImageId),
-					eq(documentsTable.documentType, "profileImage"),
-				),
-			);
+		const { id, username, email, profileImageUrl } = raw;
 		return {
 			id,
 			attributes: {
 				username: username,
 				email: email,
-				profileImageUrl: document[0].url,
+				profileImageUrl: profileImageUrl,
 			},
 		};
 	}
@@ -245,13 +228,13 @@ export type MySqlUserTable = MySqlTableWithColumns<{
 			},
 			object
 		>;
-		profileImageId: MySqlColumn<
+		profileImageUrl: MySqlColumn<
 			{
 				name: string;
 				tableName: string;
 				dataType: ColumnDataType;
 				columnType: string;
-				data: number;
+				data: string;
 				driverParam: string | number;
 				notNull: true;
 				hasDefault: boolean;

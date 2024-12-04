@@ -1,25 +1,27 @@
 import "@mantine/core/styles.css";
+import "@mantine/dropzone/styles.css";
+import "@mantine/carousel/styles.css";
 import {AppShell, MantineProvider} from "@mantine/core";
 import {ModalsProvider} from "@mantine/modals";
 import {FC, PropsWithChildren} from "react";
 import Header from "./Header.tsx";
 import {theme} from "../../utils/theme.ts";
 import Navigation from "./Navigation.tsx";
-import {useLocation} from "@tanstack/react-router";
 import MainContent from "./MainContent.tsx";
+import {useDisclosure} from "@mantine/hooks";
 
 const Layout: FC<PropsWithChildren> = ({children}) => {
-	const location = useLocation();
+	const [navbarOpened, {toggle: toggleNavbar}] = useDisclosure(false);
 
 	return (
 		<MantineProvider theme={theme}>
 			<ModalsProvider>
 				<AppShell withBorder header={{height: 80}} navbar={{
-					width: 300,
+					width: 350,
 					breakpoint: "lg",
-					collapsed: {desktop: location.pathname !== "/", mobile: location.pathname !== "/"}
+					collapsed: {desktop: false, mobile: !navbarOpened},
 				}}>
-					<Header/>
+					<Header navbarOpened={navbarOpened} toggleNavbar={toggleNavbar}/>
 					<Navigation/>
 					<MainContent>
 						{children}

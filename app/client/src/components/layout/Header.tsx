@@ -1,4 +1,4 @@
-import {FC} from "react";
+import {FC, useEffect, useRef} from "react";
 import {
 	Flex,
 	Title,
@@ -9,16 +9,36 @@ import {
 	Text,
 	AppShell,
 	Menu,
-	Button, Loader
+	Button, Loader, Anchor
 } from "@mantine/core";
 import {Link} from "../Link.tsx";
-import {IconChevronDown, IconLogin, IconLogout, IconMoon, IconSun, IconSunMoon, IconUser} from "@tabler/icons-react";
+import {
+	IconChevronDown, IconLogin,
+	IconLogout,
+	IconMenu2,
+	IconMoon,
+	IconSun,
+	IconSunMoon,
+	IconUser, IconX
+} from "@tabler/icons-react";
 import Icon from "../../assets/chair-logo.svg";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {auth} from "../../queries/auth.ts";
 import {User} from "../../types/auth.ts";
+import {modals} from "@mantine/modals";
+import LoginForm from "../auth/LoginForm.tsx";
+import {useToggle} from "@mantine/hooks";
+import RegisterForm from "../auth/RegisterForm.tsx";
+import UserCard from "../UserCard.tsx";
 
-const Header: FC = () => {
+type HeaderProps = {
+	navbarOpened: boolean;
+	toggleNavbar: () => void;
+}
+
+const Header: FC<HeaderProps> = ({toggleNavbar, navbarOpened}) => {
+	const firstRender = useRef(false);
+	const [authType, toggleAuthType] = useToggle<"login" | "register">(["login", "register"]);
 	const {colorScheme, toggleColorScheme} = useMantineColorScheme();
 	const {data, isPending} = useQuery<User, boolean>({
 		queryKey: auth.userDetailOptions.key,
@@ -32,13 +52,59 @@ const Header: FC = () => {
 		onSuccess: async () => await queryClient.invalidateQueries({queryKey: ["auth.user"], refetchType: "all"})
 	})
 
+	const authModal = () => modals.open({
+		title: authType === "login" ? "Login" : "Register",
+		centered: true,
+		size: "lg",
+		radius: "sm",
+		styles: {
+			title: {
+				fontSize: "var(--mantine-h2-font-size)",
+				fontWeight: "var(--mantine-h2-font-weight)",
+				lineHeight: "var(--mantine-h2-line-height)",
+			}
+		},
+		children: <>
+			<Text size="lg">Or,{" "}
+				<Anchor component="button"
+				        onClick={() => toggleAuthType()}>{authType === "login" ? "register" : "login"}</Anchor>
+			</Text>
+			{authType === "login" ? <LoginForm/> : <RegisterForm/>}
+		</>
+	})
+
+	const userModal = () => modals.open({
+		title: "Profile",
+		centered: true,
+		size: "md",
+		radius: "sm",
+		styles: {
+			title: {
+				fontSize: "var(--mantine-h2-font-size)",
+				fontWeight: "var(--mantine-h2-font-weight)",
+				lineHeight: "var(--mantine-h2-line-height)",
+			}
+		},
+		children: <UserCard/>
+	})
+
+	useEffect(() => {
+		if (firstRender.current) {
+			modals.closeAll();
+			authModal();
+			return
+		} else {
+			firstRender.current = true;
+		}
+	}, [authType])
+
 	return (
 		<AppShell.Header>
-			<Flex direction="row" justify="space-between" align="center" px="sm">
+			<Flex direction="row" justify="space-between" align="center" px="sm" h={80}>
 				<Link.Button to="/" variant="transparent" h="min-content" p="xs">
 					<Group>
 						<Avatar src={Icon} size="lg" style={{rotate: "-30deg"}}/>
-						<Title style={{fontFamily: "Iosevka Etoile"}}>Furniturezz</Title>
+						<Title visibleFrom="lg" style={{fontFamily: "Iosevka Etoile"}}>Furniturezz</Title>
 					</Group>
 				</Link.Button>
 				<Group>
@@ -54,13 +120,14 @@ const Header: FC = () => {
 								        rightSection={
 									        <IconChevronDown/>
 								        }>
-									<Text size="xl">{data.username}</Text>
+									<Text size="xl"
+									      style={{overflow: "hidden", textOverflow: "ellipsis"}}>{data.username}</Text>
 								</Button>
 							</Menu.Target>
 
 							<Menu.Dropdown>
-								<Link.MenuItem to="/user" leftSection={<IconUser/>}><Text
-									size="lg">Profile</Text></Link.MenuItem>
+								<Menu.Item onClick={() => userModal()} leftSection={<IconUser/>}><Text
+									size="lg">Profile</Text></Menu.Item>
 								<Menu.Item onClick={() => logoutMutation.mutate()} disabled={logoutMutation.isPending}
 								           closeMenuOnClick leftSection={<IconLogout/>}>
 									{logoutMutation.isPending ?
@@ -71,12 +138,15 @@ const Header: FC = () => {
 							</Menu.Dropdown>
 						</Menu>
 					) : (
-						<Link.Button loading={isPending} to="/auth" size="lg" variant="subtle"
-						             leftSection={<IconLogin/>}><Text size="xl">Login</Text></Link.Button>
+						<Button loading={isPending} size="lg" variant="subtle"
+						        leftSection={<IconLogin/>} onClick={authModal}><Text size="xl">Login</Text></Button>
 					)}
 					<ActionIcon variant="transparent" onClick={toggleColorScheme} size="lg"
 					            mr="sm">{colorScheme === "dark" ?
 						<IconMoon/> : colorScheme === "light" ? <IconSun/> : <IconSunMoon/>}</ActionIcon>
+					<ActionIcon variant="transparent" onClick={toggleNavbar} size="lg" mr="sm"
+					            hiddenFrom="lg">{navbarOpened ? <IconX/> :
+						<IconMenu2/>}</ActionIcon>
 				</Group>
 			</Flex>
 		</AppShell.Header>

@@ -2,7 +2,6 @@ import {AppShell, Button, ButtonGroup, Divider, TextInput} from "@mantine/core";
 import {FC} from "react";
 import {IconSearch, IconTrash} from "@tabler/icons-react";
 
-
 const Navigation: FC = () => {
 	return (
 		<AppShell.Navbar>

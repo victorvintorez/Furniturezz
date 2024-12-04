@@ -1,8 +1,9 @@
-import { createConnection } from "mysql2/promise";
 import { drizzle } from "drizzle-orm/mysql2";
-import { env } from "../utils/dotenv";
-import { createClient } from "redis";
 import { migrate } from "drizzle-orm/mysql2/migrator";
+import { createConnection } from "mysql2/promise";
+import { createClient } from "redis";
+import { env } from "../utils/dotenv";
+import * as schema from "./schema";
 
 // Setup MySql DB and run migrations
 const connection = await createConnection({
@@ -12,7 +13,10 @@ const connection = await createConnection({
 	password: env.MYSQL_PASSWORD,
 	database: env.MYSQL_DATABASE,
 });
-const mysql = drizzle(connection);
+const mysql = drizzle(connection, {
+	mode: "default",
+	schema,
+});
 await migrate(mysql, { migrationsFolder: "./src/db/.migrations" });
 
 // Setup KeyDB

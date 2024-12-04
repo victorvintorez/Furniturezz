@@ -1,4 +1,5 @@
 export interface User {
+	id: number;
 	username: string;
 	title: string;
 	firstName: string;
@@ -19,19 +20,19 @@ export type LoginFormValues = {
 	password: string;
 }
 
-export type RegisterFormValues = {
+export interface RegisterFormValues {
 	username: string;
-	title: "Mr" | "Mrs" | "Miss" | "Ms" | "Dr" | "Prof" | "Rev" | "Lord" | "Lady";
+	password: string;
+	email: string;
+	telephone: string;
+	profileImage: File | null; // File must allow null at first for setting initial value
+	title: "Mr" | "Mrs" | "Miss" | "Ms" | "Dr" | "Prof" | "Rev" | "Lord" | "Lady" | "Not Listed" | "";
 	firstName: string;
 	lastName: string;
-	gender: "Male" | "Female" | "Non-Binary" | "Not Listed";
+	gender: "Male" | "Female" | "Non-Binary" | "Not Listed" | "";
+	description: string;
 	address1: string;
 	address2: string | null;
 	address3: string | null;
 	postcode: string;
-	description: string;
-	email: string;
-	telephone: string;
-	password: string;
-	profileImage: File | null; // File must allow null at first for setting initial value
 }

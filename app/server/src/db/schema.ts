@@ -1,3 +1,4 @@
+import {relations} from "drizzle-orm";
 import {
 	bigint,
 	serial,
@@ -21,48 +22,46 @@ export const usersTable = table("users", {
 	description: varchar({ length: 255 }).default(""),
 	email: varchar({ length: 255 }).notNull().unique(),
 	telephone: varchar({ length: 255 }).notNull(),
-	profileImageId: bigint({ mode: "number", unsigned: true })
-		.notNull()
-		.references(() => documentsTable.id),
+	profileImageUrl: varchar({ length: 255 }).notNull(),
 });
 
-export const furnitureDetailsTable = table("furniture_details", {
+export const furnitureTable = table("furniture", {
 	id: serial().primaryKey(),
 	userId: bigint({ mode: "number", unsigned: true })
 		.notNull()
 		.references(() => usersTable.id),
-	furnitureMake: varchar({ length: 255 }).notNull(),
-	furnitureModel: varchar({ length: 255 }).notNull(),
-	furnitureColor: varchar({ length: 255 }).notNull(),
-	furnitureType: varchar({ length: 255 }).notNull(),
+	make: varchar({ length: 255 }).notNull(),
+	model: varchar({ length: 255 }).notNull(),
+	color: varchar({ length: 255 }).notNull(),
+	type: varchar({ length: 255 }).notNull(),
 	location: varchar({ length: 255 }).notNull(),
 	year: varchar({ length: 255 }).notNull(),
-	videoId: bigint({ mode: "number", unsigned: true })
-		.notNull()
-		.references(() => documentsTable.id),
+	videoUrl: varchar({ length: 255 }).notNull(),
 });
 
-export const documentsTable = table("documents", {
-	id: serial().primaryKey(),
-	documentType: varchar({ length: 255 }).notNull(),
-	documentUrl: varchar({ length: 255 }).notNull(),
-});
-
-export const furnitureImagesTable = table("furniture_images", {
+export const imagesTable = table("images", {
 	id: serial().primaryKey(),
 	furnitureId: bigint({ mode: "number", unsigned: true })
 		.notNull()
-		.references(() => furnitureDetailsTable.id),
-	imageId: bigint({ mode: "number", unsigned: true })
-		.notNull()
-		.references(() => documentsTable.id),
+		.references(() => furnitureTable.id),
+	imageUrl: varchar({ length: 255 }).notNull(),
 });
 
-export const Table = {
-	users: usersTable,
-	furniture_details: furnitureDetailsTable,
-	documents: documentsTable,
-	furniture_images: furnitureImagesTable,
-} as const;
+export const userFurnitureRelations = relations(usersTable, ({ many }) => ({
+	furniture: many(furnitureTable)
+}));
 
-export type Table = typeof Table;
+export const furnitureUserRelations = relations(furnitureTable, ({ one, many }) => ({
+	user: one(usersTable, {
+		fields: [furnitureTable.userId],
+		references: [usersTable.id],
+	}),
+	images: many(imagesTable)
+}));
+
+export const imageFurnitureRelations = relations(imagesTable, ({ one }) => ({
+	furniture: one(furnitureTable, {
+		fields: [imagesTable.furnitureId],
+		references: [furnitureTable.id],
+	})
+}));
