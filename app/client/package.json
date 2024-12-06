@@ -11,6 +11,7 @@
 		"lint": "biome check --write"
 	},
 	"dependencies": {
+		"@leeoniya/ufuzzy": "^1.0.17",
 		"@mantine/carousel": "^7.14.1",
 		"@mantine/core": "^7.14.1",
 		"@mantine/dropzone": "^7.14.1",
@@ -24,8 +25,7 @@
 		"@tanstack/router-devtools": "^1.78.0",
 		"embla-carousel-react": "^7.1.0",
 		"react": "^18.3.1",
-		"react-dom": "^18.3.1",
-		"zustand": "^5.0.1"
+		"react-dom": "^18.3.1"
 	},
 	"devDependencies": {
 		"@tanstack/router-plugin": "^1.78.0",

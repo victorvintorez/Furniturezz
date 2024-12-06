@@ -42,3 +42,13 @@ export interface EditFurnitureFormValues {
 	video: File | null;
 	images: File[] | null;
 }
+
+export interface FurnitureFilterOptions {
+	searchText: string | undefined;
+	make: string | undefined;
+	model: string | undefined;
+	color: string | undefined;
+	type: string | undefined;
+	location: string | undefined;
+	year: string | undefined;
+}

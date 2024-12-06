@@ -37,7 +37,7 @@ type HeaderProps = {
 }
 
 const Header: FC<HeaderProps> = ({toggleNavbar, navbarOpened}) => {
-	const firstRender = useRef(false);
+	const firstRender = useRef(true);
 	const [authType, toggleAuthType] = useToggle<"login" | "register">(["login", "register"]);
 	const {colorScheme, toggleColorScheme} = useMantineColorScheme();
 	const {data, isPending} = useQuery<User, boolean>({
@@ -89,12 +89,12 @@ const Header: FC<HeaderProps> = ({toggleNavbar, navbarOpened}) => {
 	})
 
 	useEffect(() => {
-		if (firstRender.current) {
+		if (!firstRender.current) {
 			modals.closeAll();
 			authModal();
 			return
 		} else {
-			firstRender.current = true;
+			firstRender.current = false;
 		}
 	}, [authType])
 

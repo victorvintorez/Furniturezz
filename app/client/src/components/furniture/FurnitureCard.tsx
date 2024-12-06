@@ -10,6 +10,7 @@ import {IconEdit, IconLocation, IconTrash} from "@tabler/icons-react";
 import {modals} from "@mantine/modals";
 import EditFurnitureForm from "./EditFurnitureForm.tsx";
 import {furniture as furnitureQuery} from "../../queries/furniture.ts";
+import FurnitureModal from "./FurnitureModal.tsx";
 
 interface FurnitureCardProps {
 	furniture: Furniture;
@@ -26,6 +27,21 @@ const FurnitureCard: FC<FurnitureCardProps> = ({furniture}) => {
 		mutationKey: furnitureQuery.deleteFurnitureMutOptions.key,
 		mutationFn: async (id: number) => await furnitureQuery.deleteFurnitureMutOptions.fn(id),
 		onSuccess: async () => await queryClient.invalidateQueries({queryKey: ["furniture.all"], refetchType: "all"}),
+	})
+
+	const viewFurnitureModal = () => modals.open({
+		title: `${furniture.make} ${furniture.model} - Details`,
+		centered: true,
+		size: "lg",
+		radius: "sm",
+		styles: {
+			title: {
+				fontSize: "var(--mantine-h1-font-size)",
+				fontWeight: "var(--mantine-h1-font-weight)",
+				lineHeight: "var(--mantine-h1-line-height)",
+			}
+		},
+		children: <FurnitureModal furniture={furniture}/>
 	})
 
 	const editFurnitureModal = () => modals.open({
@@ -46,12 +62,7 @@ const FurnitureCard: FC<FurnitureCardProps> = ({furniture}) => {
 	return (
 		<Card withBorder>
 			<Card.Section>
-				<Carousel withControls withIndicators={false} classNames={classes}>
-					<Carousel.Slide>
-						<video height="300" controls>
-							<source src={furniture.videoUrl} type="video/mp4"/>
-						</video>
-					</Carousel.Slide>
+				<Carousel withControls withIndicators={false} classNames={classes} h="300">
 					{furniture.images.map(({imageUrl}, index) => (
 						<Carousel.Slide key={index}>
 							<Image src={imageUrl} alt={`${furniture.make} ${furniture.model}`} h="300"/>
@@ -81,7 +92,7 @@ const FurnitureCard: FC<FurnitureCardProps> = ({furniture}) => {
 						</Stack>
 					</Group>
 					<Button.Group>
-						<Button fullWidth onClick={() => null} size="lg">Contact Seller</Button>
+						<Button fullWidth onClick={viewFurnitureModal} size="lg">View More Details</Button>
 						{userData?.id === furniture.userId && (
 							<>
 								<Button color="blue" size="lg" onClick={editFurnitureModal}><IconEdit/></Button>
