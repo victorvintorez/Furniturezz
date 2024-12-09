@@ -26,13 +26,14 @@ const Index = () => {
 	const filterFurniture = (furniture: Furniture[] | undefined) => {
 		if (!furniture) return [];
 
-		const filteredFurniture = furnitureData as Furniture[];
+		const filteredFurniture: Furniture[] = [];
 
 		if (search.searchText) {
 			const haystack = furniture.map(furniture => `${furniture.make}¦${furniture.model}¦${furniture.color}¦${furniture.type}¦${furniture.location}¦${furniture.year}`);
 			const fuzzy = new uFuzzy({});
 			const result = fuzzy.filter(haystack, search.searchText);
 			result?.map((id) => {
+				console.log(id);
 				const furniture = filteredFurniture.find(furniture => furniture.id === id);
 				if (furniture) {
 					filteredFurniture.push(furniture);
@@ -64,10 +65,10 @@ const Index = () => {
 			filteredFurniture.filter(furniture => furniture.year === search.year);
 		}
 
+		console.log(filteredFurniture.length);
 		return filteredFurniture;
 	}
 
-	// TODO - furniture filtering not working
 	const filteredFurniture: Furniture[] = useMemo((): Furniture[] => filterFurniture(furnitureData), [furnitureData])
 
 	return (
@@ -89,13 +90,13 @@ export const Route = createFileRoute('/')({
 	}),
 	validateSearch: (search): FurnitureFilterOptions => {
 		return {
-			searchText: search.searchText || undefined,
-			make: search.make || undefined,
-			model: search.model || undefined,
-			color: search.color || undefined,
-			type: search.type || undefined,
-			location: search.location || undefined,
-			year: search.year || undefined,
-		} as FurnitureFilterOptions
+			searchText: search.searchText as string || undefined,
+			make: search.make as string || undefined,
+			model: search.model as string || undefined,
+			color: search.color as string || undefined,
+			type: search.type as string || undefined,
+			location: search.location as string || undefined,
+			year: search.year as string || undefined,
+		}
 	}
 })
