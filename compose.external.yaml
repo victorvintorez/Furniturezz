@@ -1,6 +1,6 @@
 services:
   app:
-    image: $EXTERNAL_APP_IMAGE
+    image: furniturezz/furniturezz-app
     environment:
       SERVER_PORT: $SERVER_PORT
       MYSQL_HOST: $MYSQL_HOST

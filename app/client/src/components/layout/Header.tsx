@@ -101,7 +101,15 @@ const Header: FC<HeaderProps> = ({toggleNavbar, navbarOpened}) => {
 	return (
 		<AppShell.Header>
 			<Flex direction="row" justify="space-between" align="center" px="sm" h={80}>
-				<Link.Button to="/" variant="transparent" h="min-content" p="xs">
+				<Link.Button to="/" search={{
+					searchText: undefined,
+					make: undefined,
+					model: undefined,
+					color: undefined,
+					type: undefined,
+					location: undefined,
+					year: undefined,
+				}} variant="transparent" h="min-content" p="xs">
 					<Group>
 						<Avatar src={Icon} size="lg" style={{rotate: "-30deg"}}/>
 						<Title visibleFrom="lg" style={{fontFamily: "Iosevka Etoile"}}>Furniturezz</Title>

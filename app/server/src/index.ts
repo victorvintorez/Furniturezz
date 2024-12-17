@@ -1,25 +1,16 @@
-import { Elysia } from "elysia";
-import { env } from "./utils/dotenv";
-import { AuthService } from "./services/auth.service";
-import swagger from "@elysiajs/swagger";
-import { serveSpa } from "./utils/serveSpa";
-import { AuthController } from "./controllers/auth.controller";
 import { logger } from "@bogeychan/elysia-logger";
-import { UserController } from "./controllers/user.controller";
+import swagger from "@elysiajs/swagger";
+import { Elysia } from "elysia";
+import { AuthController } from "./controllers/auth.controller";
 import { FurnitureDetailsController } from "./controllers/furnitureDetails.controller";
+import { UserController } from "./controllers/user.controller";
+import { AuthService } from "./services/auth.service";
+import { env } from "./utils/dotenv";
+import { serveSpa } from "./utils/serveSpa";
 
 const app = new Elysia()
 	.use(swagger())
-	.use(
-		logger({
-			transport: {
-				target: "pino-pretty",
-				options: {
-					colorize: true,
-				},
-			},
-		}),
-	)
+	.use(logger())
 	.use(serveSpa)
 	.use(AuthService)
 	.group("/api", (app) =>

@@ -66,7 +66,7 @@ const Index = () => {
 		}
 
 		console.log(filteredFurniture.length);
-		return filteredFurniture;
+		return furnitureData ?? [];
 	}
 
 	const filteredFurniture: Furniture[] = useMemo((): Furniture[] => filterFurniture(furnitureData), [furnitureData])

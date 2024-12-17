@@ -1,19 +1,12 @@
 import {AppShell, Button, ButtonGroup, Divider, TextInput} from "@mantine/core";
 import {FC, useState} from "react";
 import {IconSearch, IconTrash} from "@tabler/icons-react";
-import {useQuery} from "@tanstack/react-query";
-import {Furniture, FurnitureFilterOptions} from "../../types/furniture.ts";
-import {furniture} from "../../queries/furniture.ts";
+import {FurnitureFilterOptions} from "../../types/furniture.ts";
 import {useNavigate} from "@tanstack/react-router";
 
 const Navigation: FC = () => {
 	const navigate = useNavigate({from: '/'})
 	const [searchText, setSearchText] = useState<string>('')
-	const {data: furnitureData} = useQuery<Furniture[]>({
-		queryKey: furniture.getAllFurnitureOptions.key,
-		queryFn: furniture.getAllFurnitureOptions.fn,
-		staleTime: furniture.getAllFurnitureOptions.stale,
-	})
 
 	return (
 		<AppShell.Navbar>
